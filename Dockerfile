@@ -18,4 +18,4 @@ RUN npm install
 CMD [ "npm", "run", "start" ]
 
 # Exposing server port
-EXPOSE 3000 80
+EXPOSE 3000
