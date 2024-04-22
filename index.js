@@ -33,6 +33,7 @@ app.listen(port, () => {
 })
 
 app.use('/auth', authRoute)
+app.get('/', (req, res) => res.send("hello world"))
 
 app.use(
   cors({
