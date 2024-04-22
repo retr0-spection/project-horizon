@@ -2,7 +2,8 @@
 FROM node:slim
 
 # Declaring env
-ENV NODE_ENV development
+ENV NODE_ENV production
+ENV PORT 80
 
 # Setting up the work directory
 WORKDIR /web
@@ -13,8 +14,9 @@ COPY . .
 # Installing dependencies
 RUN npm install
 
+# Exposing server port
+EXPOSE 80
+
 # Starting our application
 CMD [ "npm", "run", "start" ]
 
-# Exposing server port
-EXPOSE 3001
