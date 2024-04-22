@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-
+import jwt from 'jsonwebtoken'
 import {signup} from './controllers/AuthController.js';
 
 const router = express.Router()
@@ -17,6 +17,14 @@ router.get(
     res.redirect("/");
   }
 );
+
+router.post("/authenticate", (req, res) => {
+  const {token} = req.body
+
+  const profile = jwt.decode(token)
+  res.statusCode = 200
+  res.send(profile)
+})
 
 router.get("/logout", function (req, res) {
   req.logout();
