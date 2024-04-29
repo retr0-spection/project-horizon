@@ -4,8 +4,20 @@ import dotenv from "dotenv";
 import session from 'express-session';
 import cors from 'cors';
 import passport from './authentication/passport.js';
+
+//import routes
 import authRoute from "./authentication/routes.js";
+import itemRoute from "./items/routes.js";
+
+//import models
 import defineUserModel from './common/models/User.js';
+import defineItemModel from './common/models/Items.js';
+import defineCategoryModel from './common/models/Category.js';
+import defineGenderModel from './common/models/Gender.js';
+import defineSizeModel from './common/models/Size.js';
+import defineItemSizeModel from './common/models/ItemSize.js';
+import defineColorModel from './common/models/Color.js';
+import defineItemColorModel from './common/models/ItemColor.js';
 
 dotenv.config();
 
@@ -47,8 +59,9 @@ app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
 
-app.use('/auth', authRoute)
-app.get('/', (req, res) => res.send("hello world"))
+app.use('/auth', authRoute);
+app.use("/item", itemRoute);
+app.get('/', (req, res) => res.send("hello world"));
 
 app.use(
   cors({
@@ -59,7 +72,7 @@ app.use(
 )
 
 //connect to the database
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+/*const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
   host: process.env.DB_HOST,
   dialect: "postgres",
   port: 5432,
@@ -69,9 +82,9 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
       require: true
     }
   }
-});
+});*/
 
-/*const sequelize = new Sequelize(
+const sequelize = new Sequelize(
   "espaza",
   "root",
   "",
@@ -79,15 +92,22 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
     host: "localhost",
     dialect: "mysql",
   }
-);*/
+);
 
 // initializing the Model on sequelize
 const User = defineUserModel(sequelize);
+const Category = defineCategoryModel(sequelize);
+const Gender = defineGenderModel(sequelize);
+const Item = defineItemModel(sequelize);
+const SIze = defineSizeModel(sequelize);
+const ItemSize = defineItemSizeModel(sequelize);
+const Color = defineColorModel(sequelize);
+const ItemColor = defineItemColorModel(sequelize);
 
 // Syncing the models that are defined on sequelize with the tables that already exists
 // in the database. It creates models as tables that do not exist in the DB.
 sequelize
-  .sync()
+  .sync({alter: true})
   .then(() => {
     console.log("Sequelize Initialized!!");
   })

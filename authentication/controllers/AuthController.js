@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+/*const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
   host: process.env.DB_HOST,
   dialect: "postgres",
   port: 5432,
@@ -14,12 +14,12 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
       require: true
     }
   }
-});
+});*/
 
-/*const sequelize = new Sequelize("espaza", "root", "", {
+const sequelize = new Sequelize("espaza", "root", "", {
   host: "localhost",
   dialect: "mysql",
-});*/
+});
 
 const { createUser } = defineUserModel(sequelize);
 

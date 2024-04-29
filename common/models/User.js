@@ -8,21 +8,6 @@ export default function defineUserModel(sequelize) {
       type: DataTypes.STRING,
       primaryKey: true,
     },
-    fname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    lname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
     role: {
       type: DataTypes.STRING,
       allowNull: false,
