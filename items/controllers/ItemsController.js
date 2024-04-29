@@ -21,7 +21,7 @@ const sequelize = new Sequelize("espaza", "root", "", {
   dialect: "mysql",
 });
 
-const { createItem, getItems } = defineItemModel(sequelize);
+const { createItem, getItems, getItemById } = defineItemModel(sequelize);
 
 export async function addItem(item){
     try{
@@ -39,7 +39,18 @@ export async function fetchItems() {
     const items = await getItems();
     return items;
   } catch (error) {
-    console.error("Error retrieving item:", error);
-    throw error;
+    console.error("Error retrieving items:", error);
+    //throw error;
   }
+
+}
+
+export async function fetchItemById(id){
+    try{
+        const item = getItemById(id);
+        return item;
+    } catch(error){
+        console.error("Error retrieving item:", error);
+        //throw error;
+    }
 }

@@ -43,6 +43,10 @@ export default function defineItemColorModel(sequelize) {
           key: "colorId",
         },
       },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       tableName: "item_colors",

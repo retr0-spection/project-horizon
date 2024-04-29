@@ -43,12 +43,17 @@ export default function defineItemSizeModel(sequelize) {
           key: "sizeId",
         },
       },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       tableName: "item_sizes",
       timestamps: false,
       primaryKey: true,
-},);
+    }
+  );
 
   //create your functions here
 

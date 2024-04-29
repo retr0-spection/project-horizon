@@ -50,7 +50,7 @@ export default function defineItemModel(sequelize) {
   });
 
   Item.belongsTo(Category, {foreignKey: 'categoryID', allowNull: false});
-  Item.belongsTo(Gender, { foreignKey: "genderID", allowNull: false });
+  //Item.belongsTo(Gender, { foreignKey: "genderID", allowNull: false });
 
   //create your functions here
   const createItem = async (item) => {
@@ -71,10 +71,35 @@ export default function defineItemModel(sequelize) {
       return items;
     } catch (error) {
       console.error("Error retrieving items:", error);
-      throw error;
+      //throw error;
     }
   }
 
-  return { Item, createItem, getItems };
+  const getItemById = async (itemId) => {
+    try {
+      // Find the item by its itemId
+      const item = await Item.findByPk(itemId, {
+        include: [Category, Gender] // Include associated category and gender
+      });
+      return item;
+    } catch (error) {
+      console.error("Error retrieving item:", error);
+      //throw error;
+    }
+  };
+
+  /*const getItemByCategory = async (itemId) => {
+    try {
+      const item = await Item.findByPk(itemId, {
+        include: [Category, Gender], // Include associated category and gender
+      });
+      return item;
+    } catch (error) {
+      console.error("Error retrieving item:", error);
+      //throw error;
+    }
+  };*/
+
+  return { Item, createItem, getItems, getItemById };
 
 }
