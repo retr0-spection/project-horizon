@@ -8,7 +8,7 @@ dotenv.config();
   host: process.env.DB_HOST,
   dialect: "postgres",
   port: 5432,
-  ssl: true, 
+  ssl: true,
   dialectOptions: {
     ssl: {
       require: true
@@ -44,12 +44,12 @@ export default function defineCategoryModel(sequelize) {
     },
     {
       timestamps: false,
-    }
+    },
   );
 
   Category.belongsTo(Gender, { foreignKey: "genderID", allowNull: false });
 
   //create your functions here
- 
+
   return { Category };
 }
