@@ -67,10 +67,11 @@ db.Sequelize = Sequelize;
 
 // Syncing the models that are defined on sequelize with the tables that already exists
 
+const { Item } = defineItemModel(sequelize);
 db.User = defineUserModel(sequelize);
 db.Category = defineCategoryModel(sequelize);
 db.Gender = defineGenderModel(sequelize);
-db.Item = defineItemModel(sequelize);
+db.Item = Item;
 db.Size = defineSizeModel(sequelize);
 db.ItemSize = defineItemSizeModel(sequelize);
 db.Color = defineColorModel(sequelize);

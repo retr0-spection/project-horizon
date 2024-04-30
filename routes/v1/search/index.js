@@ -1,46 +1,11 @@
 import express from "express";
 const router = express.Router();
 
-router.get("/:query", (req, res) => {
-  payload = [
-    {
-      name: "Some product",
-      description: "some description",
-      price: 3020,
-      image: "#",
-      gender: "Male",
-    },
-    {
-      name: "Some product",
-      description: "some description",
-      price: 3020,
-      image: "#",
-      gender: "Male",
-    },
-    {
-      name: "Some product",
-      description: "some description",
-      price: 3020,
-      image: "#",
-      gender: "Female",
-    },
-    {
-      name: "Some product",
-      description: "some description",
-      price: 3020,
-      image: "#",
-      gender: "Male",
-    },
-    {
-      name: "Some product",
-      description: "some description",
-      price: 3020,
-      image: "#",
-      gender: "Female",
-    },
-  ];
+router.get("/:query", async (req, res) => {
+  const query = req.params.query;
+  const items = await searchItems(query);
   res.sendStatus(200);
-  res.send();
+  res.send(items);
 });
 
 export default router;

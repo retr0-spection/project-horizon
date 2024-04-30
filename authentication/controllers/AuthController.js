@@ -18,10 +18,10 @@ export async function signup(token, role = "user") {
     };
     try {
       const newUser = await createUser(db.User, user);
-      return newUser;
+      return newUser.dataValues;
     } catch (err) {
       const user = await db.User.findOne({ where: { id: _profile.sub } });
-      return user;
+      return user.dataValues;
     }
   } catch (error) {
     console.error("Error creating user:", error);
