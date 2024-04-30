@@ -7,6 +7,7 @@ export default function defineSizeModel(sequelize) {
       sizeId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true
       },
       name: {
         type: DataTypes.STRING,

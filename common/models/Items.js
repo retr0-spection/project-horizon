@@ -50,7 +50,7 @@ export default function defineItemModel(sequelize) {
   });
 
   Item.belongsTo(Category, {foreignKey: 'categoryID', allowNull: false});
-  //Item.belongsTo(Gender, { foreignKey: "genderID", allowNull: false });
+  Item.belongsTo(Gender, { foreignKey: "genderID", allowNull: false });
 
   //create your functions here
   const createItem = async (item) => {
@@ -58,10 +58,20 @@ export default function defineItemModel(sequelize) {
       const newItem = await Item.create(item);
       return newItem;
     } catch (error) {
-      console.error("Error creating user:", error);
-      throw error;
+      console.error("Error adding Item:", error);
+      //throw error;
     }
   };
+  
+  const removeItem = async (itemId) => {
+    try {
+      const deletedRows = await Item.destroy({ where: { itemId: itemId } });
+      return deletedRows;
+    } catch (error) {
+      console.error("Error deleting Item:", error);
+      //throw error;
+    }
+  }
 
   const getItems = async () => {
     try {
@@ -79,7 +89,7 @@ export default function defineItemModel(sequelize) {
     try {
       // Find the item by its itemId
       const item = await Item.findByPk(itemId, {
-        include: [Category, Gender] // Include associated category and gender
+        include: [Category/*, Gender*/] // Include associated category and gender
       });
       return item;
     } catch (error) {
@@ -88,18 +98,32 @@ export default function defineItemModel(sequelize) {
     }
   };
 
-  /*const getItemByCategory = async (itemId) => {
+  const getItemsByCategory = async (categoryId) => {
     try {
-      const item = await Item.findByPk(itemId, {
-        include: [Category, Gender], // Include associated category and gender
-      });
-      return item;
+      const items = await Item.findAll({where: {
+        categoryId: categoryId
+      }});
+      return items;
     } catch (error) {
-      console.error("Error retrieving item:", error);
+      console.error("Error retrieving items:", error);
       //throw error;
     }
-  };*/
+  };
 
-  return { Item, createItem, getItems, getItemById };
+  const getItemsByGender = async (genderId) => {
+    try {
+      const items = await Item.findAll({
+        where: {
+          genderId: genderId,
+        },
+      });
+      return items;
+    } catch (error) {
+      console.error("Error retrieving items:", error);
+      //throw error;
+    }
+  };
+
+  return { Item, createItem, getItems, getItemById, getItemsByCategory, getItemsByGender, removeItem };
 
 }
