@@ -54,10 +54,23 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //connect to the database
-const sequelize = new Sequelize("espaza", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.NODE_ENV == "production" ? process.env.DB_USERNAME : "postgres",
+  process.env.NODE_ENV == "production" ? process.env.DB_PASSWORD : "",
+  {
+    host:
+      process.env.NODE_ENV == "production" ? process.env.DB_HOST : "localhost",
+    dialect: "postgres",
+    port: 5432,
+    ssl: process.env.NODE_ENV == "production",
+    dialectOptions: {
+      ssl: {
+        require: process.env.NODE_ENV == "production",
+      },
+    },
+  },
+);
 
 export const db = {};
 db.sequelize = sequelize;
