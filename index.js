@@ -1,19 +1,31 @@
-import express from 'express';
-import { Sequelize } from 'sequelize';
+import express from "express";
+import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
-import session from 'express-session';
-import cors from 'cors';
-import passport from './authentication/passport.js';
-import authRoute from "./authentication/routes.js";
-import defineUserModel from './common/models/User.js';
+import passport from "./authentication/passport.js";
+import session from "express-session";
+
+//import routes
+
+//import models
+import defineItemModel from "./common/models/Items.js";
+import defineCategoryModel from "./common/models/Category.js";
+import defineGenderModel from "./common/models/Gender.js";
+import defineSizeModel from "./common/models/Size.js";
+import defineItemSizeModel from "./common/models/ItemSize.js";
+import defineColorModel from "./common/models/Color.js";
+import defineItemColorModel from "./common/models/ItemColor.js";
+
+import defineUserModel from "./common/models/User.js";
+import defineOrderModel from "./models/order/index.js";
+import { defineRelationships } from "./models/index.js";
 
 dotenv.config();
 
-const app = express()
+export const app = express();
 
 app.use(express.json());
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -36,61 +48,49 @@ app.use(
     secret: process.env.SECRET_KEY,
     resave: true,
     saveUninitialized: true,
-  })
+  }),
 );
 app.use(passport.initialize());
 app.use(passport.session());
 
-const port = process.env.PORT || 3000
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`)
-})
-
-app.use('/auth', authRoute)
-app.get('/', (req, res) => res.send("hello world"))
-
-app.use(
-  cors({
-    origin: '*', //put frontend url
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true
-  })
-)
-
 //connect to the database
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
-  host: process.env.DB_HOST,
-  dialect: "postgres",
-  port: 5432,
-  ssl: true, 
-  dialectOptions: {
-    ssl: {
-      require: true
-    }
-  }
-});
-
-/*const sequelize = new Sequelize(
-  "espaza",
-  "root",
-  "",
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.NODE_ENV == "production" ? process.env.DB_USERNAME : "postgres",
+  process.env.NODE_ENV == "production" ? process.env.DB_PASSWORD : "",
   {
-    host: "localhost",
-    dialect: "mysql",
-  }
-);*/
+    host:
+      process.env.NODE_ENV == "production" ? process.env.DB_HOST : "localhost",
+    dialect: "postgres",
+    port: 5432,
+    ssl: process.env.NODE_ENV == "production",
+    dialectOptions: {
+      ssl: {
+        require: process.env.NODE_ENV == "production",
+      },
+    },
+  },
+);
+
+export const db = {};
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 // initializing the Model on sequelize
-const User = defineUserModel(sequelize);
 
 // Syncing the models that are defined on sequelize with the tables that already exists
+
+const { Item } = defineItemModel(sequelize);
+db.User = defineUserModel(sequelize);
+db.Category = defineCategoryModel(sequelize);
+db.Gender = defineGenderModel(sequelize);
+db.Item = Item;
+db.Size = defineSizeModel(sequelize);
+db.ItemSize = defineItemSizeModel(sequelize);
+db.Color = defineColorModel(sequelize);
+db.ItemColor = defineItemColorModel(sequelize);
+db.Order = defineOrderModel(sequelize);
+
+//relationships
+defineRelationships(db);
 // in the database. It creates models as tables that do not exist in the DB.
-sequelize
-  .sync()
-  .then(() => {
-    console.log("Sequelize Initialized!!");
-  })
-  .catch((err) => {
-    console.error("Sequelize Initialization threw an error:", err);
-  });
