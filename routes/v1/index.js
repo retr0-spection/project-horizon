@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.use("/stock", stockRouter);
 router.use("/search", searchRouter);
-router.use("/checkout", stockRouter);
+router.use("/checkout", checkoutRouter);
+
+export default router;

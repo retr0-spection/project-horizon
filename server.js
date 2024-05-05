@@ -1,6 +1,7 @@
 import { app, db } from "./index.js";
 import itemRoute from "./items/routes.js";
 import authRoute from "./authentication/routes.js";
+import apiRouter from "./routes/v1/index.js";
 import cors from "cors";
 
 const port = process.env.PORT || 3000;
@@ -34,6 +35,8 @@ app.use("/", async (req, res, next) => {
 app.use("/auth", authRoute);
 app.use("/item", itemRoute);
 app.get("/", (req, res) => res.send("hello world"));
+
+app.get("/api", apiRouter);
 
 app.use(
   cors({
