@@ -43,17 +43,29 @@ app.use(function (req, res, next) {
   }
 });
 
-app.use(
-  session({
-    secret: process.env.SECRET_KEY,
-    resave: true,
-    saveUninitialized: true,
-  }),
-);
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(
+//   session({
+//     secret: process.env.SECRET_KEY,
+//     resave: true,
+//     saveUninitialized: true,
+//   }),
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 //connect to the database
+const sslOptions =
+  process.env.NODE_ENV == "production"
+    ? {
+        ssl: true,
+        dialectOptions: {
+          ssl: {
+            require: process.env.NODE_ENV == "production",
+          },
+        },
+      }
+    : {};
+
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.NODE_ENV == "production" ? process.env.DB_USERNAME : "postgres",
@@ -63,12 +75,7 @@ const sequelize = new Sequelize(
       process.env.NODE_ENV == "production" ? process.env.DB_HOST : "localhost",
     dialect: "postgres",
     port: 5432,
-    ssl: process.env.NODE_ENV == "production",
-    dialectOptions: {
-      ssl: {
-        require: process.env.NODE_ENV == "production",
-      },
-    },
+    ...sslOptions,
   },
 );
 
@@ -81,11 +88,12 @@ db.Sequelize = Sequelize;
 // Syncing the models that are defined on sequelize with the tables that already exists
 
 const { Item } = defineItemModel(sequelize);
+const { Size } = defineSizeModel(sequelize);
 db.User = defineUserModel(sequelize);
 db.Category = defineCategoryModel(sequelize);
 db.Gender = defineGenderModel(sequelize);
 db.Item = Item;
-db.Size = defineSizeModel(sequelize);
+db.Size = Size;
 db.ItemSize = defineItemSizeModel(sequelize);
 db.Color = defineColorModel(sequelize);
 db.ItemColor = defineItemColorModel(sequelize);

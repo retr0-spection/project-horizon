@@ -1,7 +1,8 @@
-import { DataTypes, Sequelize } from 'sequelize';
-import defineCategoryModel from './Category.js';
+import { DataTypes, Sequelize } from "sequelize";
+import defineCategoryModel from "./Category.js";
 import defineGenderModel from "./Gender.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import { db } from "../../index.js";
 
 dotenv.config();
 
@@ -9,21 +10,13 @@ dotenv.config();
   host: process.env.DB_HOST,
   dialect: "postgres",
   port: 5432,
-  ssl: true, 
+  ssl: true,
   dialectOptions: {
     ssl: {
       require: true
     }
   }
 });*/
-
-const sequelize = new Sequelize("espaza", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
-});
-
-const {Category} = defineCategoryModel(sequelize);
-const {Gender} = defineGenderModel(sequelize);
 
 export default function defineItemModel(sequelize) {
   const Item = sequelize.define("Items", {
@@ -43,14 +36,39 @@ export default function defineItemModel(sequelize) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
     image: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    categoryID: {
+      allowNull: true,
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Categories",
+        key: "categoryID",
+      },
+      onDelete: "CASCADE",
+    },
+    gender: {
+      allowNull: false,
+      defaultValue: "male",
+      type: DataTypes.STRING,
+    },
+    itemSize: {
+      allowNull: true,
+      type: DataTypes.INTEGER,
+      references: {
+        model: "item_sizes",
+        key: "id",
+      },
+      onDelete: "CASCADE",
+    },
   });
-
-  Item.belongsTo(Category, {foreignKey: 'categoryID', allowNull: false});
-  Item.belongsTo(Gender, { foreignKey: "genderID", allowNull: false });
 
   //create your functions here
   const createItem = async (item) => {
@@ -62,7 +80,7 @@ export default function defineItemModel(sequelize) {
       //throw error;
     }
   };
-  
+
   const removeItem = async (itemId) => {
     try {
       const deletedRows = await Item.destroy({ where: { itemId: itemId } });
@@ -71,7 +89,7 @@ export default function defineItemModel(sequelize) {
       console.error("Error deleting Item:", error);
       //throw error;
     }
-  }
+  };
 
   const getItems = async () => {
     try {
@@ -83,13 +101,13 @@ export default function defineItemModel(sequelize) {
       console.error("Error retrieving items:", error);
       //throw error;
     }
-  }
+  };
 
   const getItemById = async (itemId) => {
     try {
       // Find the item by its itemId
       const item = await Item.findByPk(itemId, {
-        include: [Category/*, Gender*/] // Include associated category and gender
+        include: [db.Category /*, Gender*/], // Include associated category and gender
       });
       return item;
     } catch (error) {
@@ -100,9 +118,11 @@ export default function defineItemModel(sequelize) {
 
   const getItemsByCategory = async (categoryId) => {
     try {
-      const items = await Item.findAll({where: {
-        categoryId: categoryId
-      }});
+      const items = await Item.findAll({
+        where: {
+          categoryId: categoryId,
+        },
+      });
       return items;
     } catch (error) {
       console.error("Error retrieving items:", error);
@@ -124,6 +144,13 @@ export default function defineItemModel(sequelize) {
     }
   };
 
-  return { Item, createItem, getItems, getItemById, getItemsByCategory, getItemsByGender, removeItem };
-
+  return {
+    Item,
+    createItem,
+    getItems,
+    getItemById,
+    getItemsByCategory,
+    getItemsByGender,
+    removeItem,
+  };
 }

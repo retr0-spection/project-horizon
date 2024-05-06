@@ -6,7 +6,7 @@ import { db } from "../../index.js";
 
 dotenv.config();
 
-export async function signup(token, role = "user") {
+export async function signup(token, role = "customer") {
   try {
     const _profile = jwt.decode(token);
     const user = {

@@ -1,9 +1,9 @@
-import { db } from "../..";
+import { db } from "../../index.js";
 
 export const createOrder = async (user, products) => {
   const payload = {
     items: JSON.stringify(products),
-    userId: user.id,
+    customerID: user.id,
   };
   try {
     const order = await db.Order.create(payload);
@@ -27,4 +27,24 @@ const _updateStock = async (products) => {
 export const getOrder = async (orderId) => {
   const order = await db.Order.findOne({ where: { id: orderId } });
   return order?.dataValues;
+};
+
+export const getUserOrders = async (userId) => {
+  try {
+    let orders = await db.Order.findAll({ where: { customerID: userId } });
+    orders = orders.map((item) => item?.dataValues);
+    return orders;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    let orders = await db.Order.findAll();
+    orders = orders.map((item) => item?.dataValues);
+    return orders;
+  } catch (err) {
+    console.error(err);
+  }
 };

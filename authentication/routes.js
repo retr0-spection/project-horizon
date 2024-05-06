@@ -23,7 +23,8 @@ router.post("/authenticate", async (req, res) => {
   const { token } = req.body;
   const profile = await signup(token);
   res.statusCode = 200;
-  res.send(profile);
+  // console.log("token: " + token);
+  res.send({ ...profile, token });
 });
 
 router.get("/logout", function (req, res) {
