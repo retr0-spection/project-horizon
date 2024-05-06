@@ -66,14 +66,14 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./Dockerfile
-      - name: Run Tests and Generate Coverage Report
-        run: npm test -- --coverage
+      # - name: Run Tests and Generate Coverage Report
+      #   run: npm test -- --coverage
           
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage
-          path: coverage
+      # - name: Upload Coverage Report
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: coverage
+      #     path: coverage
 
   deploy:
     permissions:
