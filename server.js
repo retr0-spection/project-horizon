@@ -6,6 +6,9 @@ import cors from "cors";
 import { initConstantsInDb } from "./models/index.js";
 import Debug from "debug";
 const debug = Debug("backend:server");
+import jwt from "jsonwebtoken";
+import { getUserById } from "./controllers/user/index.js";
+
 
 const port = process.env.PORT || 3001;
 

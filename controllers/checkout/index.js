@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { db } from "../../index.js";
 
 export const createOrder = async (user, products) => {
@@ -33,7 +34,15 @@ export const getUserOrders = async (userId) => {
   try {
     let orders = await db.Order.findAll({ where: { customerID: userId } });
     orders = orders.map((item) => item?.dataValues);
-    return orders;
+    const itemIds = orders.map((order) => JSON.parse(order?.items))
+    let items = await db.Item.findAll({where:{
+      itemId: {
+      [Op.in]: itemIds
+    }}})
+
+    items = items.map((item) => item?.dataValues)
+    console.log(items)
+    return {orders, items};
   } catch (err) {
     console.error(err);
   }

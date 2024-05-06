@@ -13,6 +13,13 @@ router.get("/", async (req, res) => {
   res.statusCode = 200;
   res.send(orders);
 });
+router.get("/user", async (req, res) => {
+  const user = req.user;
+  console.log(req)
+  const {orders, items} = await getUserOrders(user.id);
+  res.statusCode = 200;
+  res.send({orders, items});
+});
 
 router.get("/:id", async (req, res) => {
   const user = req.user;
@@ -23,13 +30,6 @@ router.get("/:id", async (req, res) => {
   res.send(orders);
 });
 
-router.get("user/:id", async (req, res) => {
-  const user = req.user;
-  const id = req.params.id;
 
-  const orders = await getUserOrders(id);
-  res.statusCode = 200;
-  res.send(orders);
-});
 
 export default router;
