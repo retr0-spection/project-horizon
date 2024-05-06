@@ -1,5 +1,5 @@
 import express from "express";
-import { createOrder } from "../../../controllers/checkout";
+import { createOrder } from "../../../controllers/checkout/index.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
   };
 
   const order = await createOrder(body);
-  res.sendStatus(200);
+  res.statusCode = 200;
   res.send();
 });
 

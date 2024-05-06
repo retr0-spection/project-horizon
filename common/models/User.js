@@ -13,6 +13,18 @@ export default function defineUserModel(sequelize) {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fname: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    lname: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 
   return User;

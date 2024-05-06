@@ -7,25 +7,29 @@ import { db } from "../../index.js";
 dotenv.config();
 
 export default function defineItemSizeModel(sequelize) {
-  const { Item } = defineItemModel(sequelize);
-  const { Size } = defineSizeModel(sequelize);
-
   const ItemSize = sequelize.define(
     "ItemSize",
     {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       itemId: {
         type: DataTypes.INTEGER,
         references: {
-          model: Item,
+          model: "Items",
           key: "itemId",
         },
+        onDelete: "CASCADE",
       },
       sizeId: {
         type: DataTypes.INTEGER,
         references: {
-          model: Size,
+          model: "Sizes",
           key: "sizeId",
         },
+        onDelete: "CASCADE",
       },
       quantity: {
         type: DataTypes.INTEGER,
@@ -43,31 +47,47 @@ export default function defineItemSizeModel(sequelize) {
 
   const getQty = async (payload) => {
     try {
-      const item_size = await ItemSize.findAll({
+      const item_size = await ItemSize.findOne({
         where: {
           itemId: payload.itemId,
           sizeId: payload.sizeId,
         },
       });
-      return item_size;
+      return item_size?.dataValues;
     } catch (error) {
       console.error("Error retrieving entry:", error);
     }
-  }
+  };
 
   const updateQty = async (payload) => {
+    console.log(payload);
+    let _row = null;
     try {
-      const updatedRow = await ItemSize.update(
-        { quantity: sequelize.literal(`quantity + ${payload.quantity}`) },
-        { where: { itemId: payload.itemId, sizeId: payload.sizeId } }
-      );
-      
-      const updatedItem = await getQty(payload)
-      return updatedItem;
+      _row = await ItemSize.findOne({
+        where: { itemId: payload.itemId, sizeId: payload.sizeId },
+      });
+      if (!_row) {
+        _row = await ItemSize.create({
+          quantity: payload.quantity,
+          itemId: payload.itemId,
+          sizeId: payload.sizeId,
+        });
+      } else {
+        _row = await ItemSize.update(
+          {
+            quantity: payload.quantity,
+            itemId: payload.itemId,
+            sizeId: payload.sizeId,
+          },
+          { where: { itemId: payload.itemId, sizeId: payload.sizeId } },
+        );
+      }
+
+      return _row;
     } catch (error) {
       console.error("Error updating entry:", error);
     }
-  }
+  };
 
   return { ItemSize, updateQty, getQty };
 }

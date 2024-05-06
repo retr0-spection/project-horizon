@@ -1,12 +1,16 @@
 import express from "express";
-import { getOrder } from "../../../controllers/checkout";
+import {
+  getAllOrders,
+  getOrder,
+  getUserOrders,
+} from "../../../controllers/checkout/index.js";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const user = req.user;
 
-  const orders = await db.Order.findAll();
-  res.sendStatus(200);
+  const orders = await getAllOrders();
+  res.statusCode = 200;
   res.send(orders);
 });
 
@@ -15,7 +19,16 @@ router.get("/:id", async (req, res) => {
   const id = req.params.id;
 
   const orders = await getOrder(id);
-  res.sendStatus(200);
+  res.statusCode = 200;
+  res.send(orders);
+});
+
+router.get("user/:id", async (req, res) => {
+  const user = req.user;
+  const id = req.params.id;
+
+  const orders = await getUserOrders(id);
+  res.statusCode = 200;
   res.send(orders);
 });
 

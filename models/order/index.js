@@ -14,6 +14,15 @@ export default function defineOrderModel(sequelize) {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    customerID: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      references: {
+        model: "users",
+        key: "id",
+      },
+      onDelete: "CASCADE",
+    },
   });
 
   return Order;
