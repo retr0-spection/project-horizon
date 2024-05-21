@@ -11,7 +11,7 @@ export default function defineOrderModel(sequelize) {
       autoIncrement: true,
     },
     items: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     customerID: {

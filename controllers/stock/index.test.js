@@ -45,6 +45,7 @@ test("change item details", async () => {
       s: 3,
       m: 1,
     },
+    image:'https://assets.superbalistcdn.co.za/300x432/filters:quality(75):format(jpg)/3626680/original.jpg'
   };
   const item = await changeStockDetails("1", payload);
   expect(item).toBeTruthy();

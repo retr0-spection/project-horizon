@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  createOrder,
   getAllOrders,
   getOrder,
   getUserOrders,
@@ -13,12 +14,21 @@ router.get("/", async (req, res) => {
   res.statusCode = 200;
   res.send(orders);
 });
+
+router.post("/", async (req, res) => {
+  const user = req.user;
+  const {products} = req.body
+  console.log(user)
+  const orders = await createOrder(user, products);
+  res.statusCode = 200;
+  res.send(orders);
+});
+
 router.get("/user", async (req, res) => {
   const user = req.user;
-  console.log(req)
-  const {orders, items} = await getUserOrders(user.id);
+  const orders = await getUserOrders(user.id);
   res.statusCode = 200;
-  res.send({orders, items});
+  res.send(orders);
 });
 
 router.get("/:id", async (req, res) => {

@@ -59,6 +59,10 @@ export default function defineItemModel(sequelize) {
       defaultValue: "male",
       type: DataTypes.STRING,
     },
+    type: {
+      allowNull: true,
+      type: DataTypes.STRING,
+    },
     itemSize: {
       allowNull: true,
       type: DataTypes.INTEGER,

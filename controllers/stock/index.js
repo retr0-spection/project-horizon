@@ -62,6 +62,47 @@ export const getStockById = async (id) => {
   return payload;
 };
 
+export const getStocksByCategory = async (cat) => {
+  const _items = await db.Item.findAll({ where: { type: cat }});
+  const { getQty } = defineItemSizeModel(db.sequelize);
+  if (_items){
+    const items = Promise.all(
+      _items.map(async (item) => {
+        if (item) {
+          // get quantity
+          const _arr = Array(5).fill(0);
+          let quantities = await Promise.all(
+            _arr.map(
+              async (_, i) =>
+                await getQty({ sizeId: i + 1, itemId: item?.dataValues.itemId }),
+            ),
+          );
+          quantities = quantities.filter((item) => item);
+          const payload = {
+            ...item?.dataValues,
+          };
+          let totalCount = 0;
+          for (let i = 0; i < quantities.length; i++) {
+            totalCount += quantities[i]?.quantity;
+          }
+          console.log(totalCount);
+          payload.quantity = quantities;
+          payload.totalCount = totalCount;
+  
+          return payload;
+        }
+      }),
+    );
+
+    return items;
+  }
+
+  return []
+
+};
+
+
+
 export const addStock = async (payload) => {
   try {
     let item = await db.Item.create({
@@ -69,6 +110,8 @@ export const addStock = async (payload) => {
       description: payload.description,
       price: payload.price,
       image: payload.image,
+      gender: payload.gender,
+      type: payload.type
     });
 
     item = item?.dataValues;
@@ -126,6 +169,8 @@ export const changeStockDetails = async (itemId, payload) => {
   item.name = payload.name;
   item.description = payload.description;
   item.price = payload.price;
+  item.image = payload.image;
+  item.type = payload.type;
   if (item) {
     // set quantity
 

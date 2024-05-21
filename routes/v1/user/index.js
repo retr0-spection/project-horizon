@@ -35,7 +35,7 @@ router.delete("/:id", async (req, res) => {
   const user = await deleteUserById(id);
 
   res.statusCode = 200;
-  res.send(user);
+  res.send();
 });
 
 export default router;

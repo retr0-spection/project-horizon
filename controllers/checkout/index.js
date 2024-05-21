@@ -1,5 +1,7 @@
 import { Op } from "sequelize";
 import { db } from "../../index.js";
+import { getStockById } from "../stock/index.js";
+import { getUserById } from "../user/index.js";
 
 export const createOrder = async (user, products) => {
   const payload = {
@@ -27,22 +29,29 @@ const _updateStock = async (products) => {
 
 export const getOrder = async (orderId) => {
   const order = await db.Order.findOne({ where: { id: orderId } });
+  // return (id, products, customer)
+  if (order){
+    const customer = await getUserById(order.customerID)
+    const products = JSON.parse(order.items)
+    // console.log(_products)
+    // const products = await Promise.all(_products.map(async (productId) => await getStockById(productId.item)))
+
+    const payload = {
+      id:order.id,
+      products,
+      customer
+    }
+
+    return payload
+  }
   return order?.dataValues;
 };
 
 export const getUserOrders = async (userId) => {
   try {
     let orders = await db.Order.findAll({ where: { customerID: userId } });
-    orders = orders.map((item) => item?.dataValues);
-    const itemIds = orders.map((order) => JSON.parse(order?.items))
-    let items = await db.Item.findAll({where:{
-      itemId: {
-      [Op.in]: itemIds
-    }}})
-
-    items = items.map((item) => item?.dataValues)
-    console.log(items)
-    return {orders, items};
+    orders = await Promise.all(orders.map(async (item) => await getOrder(item.id)));
+    return orders
   } catch (err) {
     console.error(err);
   }
@@ -51,7 +60,7 @@ export const getUserOrders = async (userId) => {
 export const getAllOrders = async () => {
   try {
     let orders = await db.Order.findAll();
-    orders = orders.map((item) => item?.dataValues);
+    orders = await Promise.all(orders.map(async (item) => await getOrder(item.id)));
     return orders;
   } catch (err) {
     console.error(err);
