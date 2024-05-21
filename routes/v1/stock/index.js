@@ -4,6 +4,8 @@ import {
   changeStockDetails,
   getStock,
   getStockById,
+  getStocksByGender,
+  getStocksByName,
 } from "../../../controllers/stock/index.js";
 const router = express.Router();
 
@@ -19,6 +21,20 @@ router.get("/:id", async (req, res) => {
   const item = await getStockById(id);
   res.statusCode = 200;
   res.send(item);
+});
+
+router.get("/category/:category", async (req, res) => {
+  const cat = req.params.category;
+  const items = await getStocksByGender(cat);
+  res.statusCode = 200;
+  res.send(items);
+});
+
+router.get("/search/:name", async (req, res) => {
+  const name = req.params.name;
+  const items = await getStocksByName(name);
+  res.statusCode = 200;
+  res.send(items);
 });
 
 router.post("/:id", async (req, res) => {

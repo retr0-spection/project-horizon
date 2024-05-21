@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import defineItemSizeModel from "../../common/models/ItemSize.js";
 import { db } from "../../index.js";
 
@@ -64,6 +65,84 @@ export const getStockById = async (id) => {
 
 export const getStocksByCategory = async (cat) => {
   const _items = await db.Item.findAll({ where: { type: cat }});
+  const { getQty } = defineItemSizeModel(db.sequelize);
+  if (_items){
+    const items = Promise.all(
+      _items.map(async (item) => {
+        if (item) {
+          // get quantity
+          const _arr = Array(5).fill(0);
+          let quantities = await Promise.all(
+            _arr.map(
+              async (_, i) =>
+                await getQty({ sizeId: i + 1, itemId: item?.dataValues.itemId }),
+            ),
+          );
+          quantities = quantities.filter((item) => item);
+          const payload = {
+            ...item?.dataValues,
+          };
+          let totalCount = 0;
+          for (let i = 0; i < quantities.length; i++) {
+            totalCount += quantities[i]?.quantity;
+          }
+          console.log(totalCount);
+          payload.quantity = quantities;
+          payload.totalCount = totalCount;
+  
+          return payload;
+        }
+      }),
+    );
+
+    return items;
+  }
+
+  return []
+
+};
+
+export const getStocksByGender = async (cat) => {
+  const _items = await db.Item.findAll({ where: { gender: cat }});
+  const { getQty } = defineItemSizeModel(db.sequelize);
+  if (_items){
+    const items = Promise.all(
+      _items.map(async (item) => {
+        if (item) {
+          // get quantity
+          const _arr = Array(5).fill(0);
+          let quantities = await Promise.all(
+            _arr.map(
+              async (_, i) =>
+                await getQty({ sizeId: i + 1, itemId: item?.dataValues.itemId }),
+            ),
+          );
+          quantities = quantities.filter((item) => item);
+          const payload = {
+            ...item?.dataValues,
+          };
+          let totalCount = 0;
+          for (let i = 0; i < quantities.length; i++) {
+            totalCount += quantities[i]?.quantity;
+          }
+          console.log(totalCount);
+          payload.quantity = quantities;
+          payload.totalCount = totalCount;
+  
+          return payload;
+        }
+      }),
+    );
+
+    return items;
+  }
+
+  return []
+
+};
+
+export const getStocksByName = async (cat) => {
+  const _items = await db.Item.findAll({ where: { name: { [Op.iLike]: `%${cat}%` }}});
   const { getQty } = defineItemSizeModel(db.sequelize);
   if (_items){
     const items = Promise.all(
