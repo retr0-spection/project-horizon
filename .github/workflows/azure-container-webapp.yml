@@ -66,14 +66,13 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./Dockerfile
-      # - name: Run Tests and Generate Coverage Report
-      #   run: npm test -- --coverage
+      - name: Run Tests and Generate Coverage Report
+        run: npm test -- --coverage
           
-      # - name: Upload Coverage Report
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: coverage
-      #     path: coverage
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy:
     permissions:

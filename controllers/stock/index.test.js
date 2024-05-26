@@ -15,6 +15,8 @@ test("add item", async () => {
     description: "Cotton shirt made 100% from recycled",
     price: 300,
     image: "#",
+    type:'top',
+    gender:'male',
     quantity: {
       xs: 1,
       s: 1,
@@ -40,6 +42,8 @@ test("change item details", async () => {
     name: "Changed Name",
     description: "Some new description",
     price: 400,
+    type:'top',
+    gender:'male',
     quantity: {
       xs: 5,
       s: 3,

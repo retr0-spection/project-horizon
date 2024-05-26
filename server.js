@@ -12,7 +12,7 @@ import { getUserById } from "./controllers/user/index.js";
 
 const port = process.env.PORT || 3001;
 
-const initDB = async () => {
+export const initDB = async () => {
   db.sequelize
     .sync({ alter: true })
     .then(() => {

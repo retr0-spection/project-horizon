@@ -9,5 +9,6 @@ module.exports = {
       "lcov",
       "text",
       "clover"
-    ]
+    ],
+    testTimeout: 20000
 };

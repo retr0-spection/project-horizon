@@ -3,15 +3,10 @@ import { signup } from "./AuthController.js";
 
 beforeAll(() => {
   try {
-    // Delete all records from each table
-    // await db.Order.destroy({ where: {}, truncate: true });
+  
+   
 
-    // await db.User.destroy({ where: {}, truncate: true });
-    // Repeat for other models if needed
-
-    console.log("Database purged successfully.");
   } catch (error) {
-    console.error("Error purging database:", error);
   }
 });
 
